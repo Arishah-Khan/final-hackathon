@@ -56,72 +56,83 @@
     </style>
 </head>
 
-<body class="bg-[#f0f0f0] min-h-screen flex flex-col items-center justify-center py-10">
 
     <!-- Main Signup Container -->
-    <div class="w-full max-w-md bg-white p-6 rounded-xl shadow-md animate-fade-in">
-        <h2 class="text-3xl text-center font-bold mb-4 text-[#67604b]">SignUp</h2>
+    <body class="bg-gradient-to-r from-blue-100 via-white to-blue-100 min-h-screen flex flex-col items-center justify-center py-10">
 
-        <!-- Name Input with Icon -->
-        <div class="input-with-icon">
-            <label for="nameInput" class="block text-sm font-medium text-gray-700">Name:</label>
-            <input type="text" id="nameInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
-                placeholder="Enter your name">
-            <i class="fas fa-user"></i> <!-- User Icon -->
+        <!-- Main Signup Container -->
+        <div class="w-full max-w-md bg-white p-6 rounded-xl shadow-md animate-fade-in">
+            <h2 class="text-3xl text-center font-bold mb-4 text-blue-600">SignUp</h2>
+    
+            <!-- Name Input with Icon -->
+            <div class="input-with-icon">
+                <label for="nameInput" class="block text-sm font-medium text-gray-700">Name:</label>
+                <input type="text" id="nameInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                    placeholder="Enter your name">
+                <i class="fas fa-user text-blue-500"></i> <!-- User Icon -->
+            </div>
+    
+            <!-- Email Input with Icon -->
+            <div class="input-with-icon mt-4">
+                <label for="emailInput" class="block text-sm font-medium text-gray-700">Email:</label>
+                <input type="email" id="emailInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                    placeholder="Enter your email">
+                <i class="fas fa-envelope text-blue-500"></i> <!-- Envelope Icon -->
+            </div>
+    
+            <!-- Password Input with Icon and Toggle Visibility -->
+            <div class="input-with-icon mt-4 relative">
+                <label for="passwordInput" class="block text-sm font-medium text-gray-700">Password:</label>
+                <input type="password" id="passwordInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                    required placeholder="Enter your password">
+                <i class="fas fa-eye password-toggle-icon text-blue-500" id="togglePassword" onclick="togglePasswordVisibility()"></i> <!-- Eye Icon -->
+            </div>
+    
+            <!-- Phone Number Input with Icon -->
+            <div class="input-with-icon mt-4">
+                <label for="phoneInput" class="block text-sm font-medium text-gray-700">Phone Number:</label>
+                <input type="tel" id="phoneInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                    placeholder="Enter your phone number">
+                <i class="fas fa-phone-alt text-blue-500"></i> <!-- Phone Icon -->
+            </div>
+    
+            <!-- Address Input with Icon -->
+            <div class="input-with-icon mt-4">
+                <label for="addressInput" class="block text-sm font-medium text-gray-700">Address:</label>
+                <input type="text" id="addressInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                    placeholder="Enter your address">
+                <i class="fas fa-map-marker-alt text-blue-500"></i> <!-- Map Icon -->
+            </div>
+    
+            <!-- Profile Picture Upload -->
+            <label for="profilePicture" class="block text-sm font-medium text-gray-700 mt-4">Profile Picture:</label>
+            <input type="file" id="profilePicture" class="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                accept="image/*">
+    
+            <!-- Signup Button -->
+            <button id="signupButton" class="w-full bg-blue-600 text-black py-2 px-6 rounded-lg hover:text-blue-600 font-semibold hover:bg-blue-100 transition duration-300 mt-4">
+                Sign Up
+            </button>
+    
+            <!-- Dashboard Button (Initially hidden) -->
+            <button id="dashboardButton" class="w-full bg-green-600 text-black py-2 px-6 rounded-lg hover:text-green-600 font-semibold hover:bg-green-100 transition duration-300 mt-4 hidden">
+                Go to Dashboard
+            </button>
+    
+            <!-- Redirect to Login Button -->
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-600">Already have an account? 
+                    <button id="loginRedirectButton" class="font-bold text-blue-600 hover:underline">Login</button>
+                </p>
+            </div>
         </div>
-
-        <!-- Email Input with Icon -->
-        <div class="input-with-icon mt-4">
-            <label for="emailInput" class="block text-sm font-medium text-gray-700">Email:</label>
-            <input type="email" id="emailInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
-                placeholder="Enter your email">
-            <i class="fas fa-envelope"></i> <!-- Envelope Icon -->
-        </div>
-
-        <!-- Password Input with Icon and Toggle Visibility -->
-        <div class="input-with-icon mt-4 relative">
-            <label for="passwordInput" class="block text-sm font-medium text-gray-700">Password:</label>
-            <input type="password" id="passwordInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md"
-                required placeholder="Enter your password">
-            <i class="fas fa-eye password-toggle-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i> <!-- Eye Icon to toggle password visibility -->
-        </div>
-
-        <!-- Phone Number Input with Icon -->
-        <div class="input-with-icon mt-4">
-            <label for="phoneInput" class="block text-sm font-medium text-gray-700">Phone Number:</label>
-            <input type="tel" id="phoneInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
-                placeholder="Enter your phone number">
-            <i class="fas fa-phone-alt"></i> <!-- Phone Icon -->
-        </div>
-
-        <!-- Address Input with Icon -->
-        <div class="input-with-icon mt-4">
-            <label for="addressInput" class="block text-sm font-medium text-gray-700">Address:</label>
-            <input type="text" id="addressInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
-                placeholder="Enter your address">
-            <i class="fas fa-map-marker-alt"></i> <!-- Map Icon -->
-        </div>
-
-        <!-- Profile Picture Upload -->
-        <label for="profilePicture" class="block text-sm font-medium text-gray-700 mt-4">Profile Picture:</label>
-        <input type="file" id="profilePicture" class="w-full p-2 mt-2 border border-gray-300 rounded-md"
-            accept="image/*">
-
-        <!-- Signup Button -->
-        <button id="signupButton" class="w-full bg-[#68614c] text-white py-2 px-6 rounded-lg hover:text-black font-semibold hover:bg-[#b6af9b] transition duration-300 mt-4">Sign Up</button>
-
-        <!-- Redirect to Login Button (If account already exists) -->
-        <div class="mt-4 text-center">
-            <p class="text-sm text-gray-600">Already have an account? 
-                <button id="loginRedirectButton" class="font-bold text-[#68614c] hover:underline">Login</button>
-            </p>
-        </div>
+    
+    
 
 
-    </div>
 
     <script type="module" src="firebase.js"></script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="signup.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
 
     <script>

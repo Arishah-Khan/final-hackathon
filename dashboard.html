@@ -1,11 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Blog with Firestore</title>
+  <link href="dist/output.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <script type="module" src="firebase.js"></script>
+
+<body class="bg-gray-100">
+
+  <header class="flex items-center justify-between p-4 bg-white shadow-md">
+    <!-- Logo -->
+    <div class="text-lg font-bold text-gray-800 flex justify-center items-center gap-2">
+      <img src="images/Ellipse 1.png">
+      <img src="images/Coranu.png">
+    </div>
+
+    <!-- Search Bar -->
+    <div class="relative w-[40%]">
+      <input type="text" placeholder="Search..."
+        class="w-full p-3 pl-10 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-full" />
+      <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+    </div>
+
+    <!-- Register Button -->
+    <div id="registerDiv">
+      <button id="register"
+        class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 flex items-center gap-2">
+        Register
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  
+    <!-- User Info (Visible when logged in) -->
+    <div id="userInfo" class="hidden items-center gap-2">
+      <img id="userImage" src="default_image_url" class="w-8 h-8 rounded-full">
+      <p id="userName" class="font-bold text-gray-800"></p>
+      <i class="fas fa-ellipsis-v cursor-pointer" id="userMenu"></i>
+    </div>
+    
+
+    <!-- Add Post Button -->
+    <div>
+      <button id="addPostButton"
+        class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 flex items-center gap-2">
+        Add Post
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- Category Dropdown -->
+    <div id="categoryDropdown" class="hidden bg-white p-4 absolute mt-12 border shadow-lg rounded-lg">
+      <button id="techCategory" class="w-full py-2 text-left">Technology</button>
+      <button id="lifestyleCategory" class="w-full py-2 text-left">Lifestyle</button>
+      <button id="eduCategory" class="w-full py-2 text-left">Education</button>
+    </div>
+
+  </header>
+
+  <form id="postForm" class="hidden p-4 bg-white shadow-lg rounded-md">
+    <input type="text" id="postTitle" placeholder="Enter post title" class="w-full p-2 border border-gray-300 rounded-md mb-4">
+    <textarea id="postDescription" placeholder="Enter post description" class="w-full p-2 border border-gray-300 rounded-md mb-4"></textarea>
+    <button type="button" id="submitPostButton" class="px-4 py-2 bg-blue-500 text-white rounded-md">Submit Post</button>
+  </form>
+
+  <!-- Display Posts in a Grid -->
+  <main class="mt-8 px-4">
+    <div id="postsContainer" class="grid gap-4 mt-4">
+      <div id="techCategorySection" class="space-y-4">
+        <h2 class="text-2xl font-bold mb-4">Technology</h2>
+        <div id="techPostsContainer"></div>
+      </div>
+      <div id="lifestyleCategorySection" class="space-y-4">
+        <h2 class="text-2xl font-bold mb-4">Lifestyle</h2>
+        <div id="lifestylePostsContainer"></div>
+      </div>
+      <div id="eduCategorySection" class="space-y-4">
+        <h2 class="text-2xl font-bold mb-4">Education</h2>
+        <div id="eduPostsContainer"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="dashboard.js"></script> 
+
 </body>
 </html>

@@ -4,10 +4,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebas
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  getAuth,
+  getAuth, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-import { getFirestore , addDoc , collection , getDoc, doc, setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { getFirestore , addDoc , collection , getDocs, doc, setDoc,serverTimestamp,where,orderBy,query,onSnapshot} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 // Your Firebase configuration object
 const firebaseConfig = {
@@ -27,4 +27,4 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Export the Firestore instance for usage in other files if needed
-export { db , addDoc , collection , getDoc, doc, setDoc , getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, serverTimestamp};
+export { db , addDoc , collection , getDocs, doc, setDoc , getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, serverTimestamp, where,orderBy,query,onAuthStateChanged,onSnapshot};

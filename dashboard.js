@@ -5,7 +5,7 @@ const auth = getAuth();
 document.addEventListener("DOMContentLoaded", function () {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-     const userName = user.displayName || "User";
+      const userName = user.displayName || "User";
       const userImage = user.photoURL || "default_image_url"; 
 
       document.getElementById('registerDiv').style.display = 'none';
@@ -23,17 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to fetch additional user info from Firestore using snapshot
   function fetchUserInfo(userId) {
     try {
-      // Reference to the user document in Firestore (assuming you have a 'users' collection)
       const userDocRef = db.collection('users').doc(userId);
       
       // Real-time listener using onSnapshot
       userDocRef.onSnapshot((doc) => {
         if (doc.exists) {
           const userData = doc.data();
-          
-          // Display user info from Firestore (name and profile picture)
           document.getElementById('userName').innerText = userData.name || "User";
-          document.getElementById('userImage').src = userData.profilePicture || "default_image_url"; // Default if profile picture doesn't exist
+          document.getElementById('userImage').src = userData.profilePicture || "default_image_url"; 
         } else {
           console.log("No user data found!");
         }
@@ -46,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Toggle Add Post Button Visibility
   document.getElementById('addPostButton').addEventListener('click', function () {
     const categoryDropdown = document.getElementById('categoryDropdown');
-    categoryDropdown.classList.toggle('hidden'); // Toggle visibility
+    categoryDropdown.classList.toggle('hidden');
   });
 
   // Show Post Form for selected category
@@ -80,6 +77,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const category = document.getElementById('postForm').dataset.category;
 
     if (title && description) {
+      // Show loader while posting
+      Swal.fire({
+        title: 'Submitting...',
+        html: 'Please wait while we submit your post.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       try {
         // Add the new post to the Firestore collection for the selected category
         await addDoc(collection(db, category), {
@@ -90,23 +97,29 @@ document.addEventListener("DOMContentLoaded", function () {
           createdAt: serverTimestamp(),
         });
 
-        alert("Post Submitted!");
+        Swal.fire({
+          icon: 'success',
+          title: 'Post Submitted!',
+          text: 'Your post has been submitted successfully.',
+        });
+
         fetchPosts();  // Refresh all posts after submission
 
         // Hide the category dropdown after post submission
         document.getElementById('categoryDropdown').classList.add('hidden');
-
-        // Optionally, hide the post form if desired
         document.getElementById('postForm').classList.add('hidden');
       } catch (error) {
-        console.error("Error submitting post: ", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: `There was an error submitting your post: ${error.message}`,
+        });
       }
     }
   });
 
   // Fetch and Display Posts from All Categories using snapshot
   function fetchPosts() {
-    // Clear previous posts in all categories
     document.getElementById('techPostsContainer').innerHTML = '';
     document.getElementById('lifestylePostsContainer').innerHTML = '';
     document.getElementById('eduPostsContainer').innerHTML = '';
@@ -114,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const categories = ['Technology', 'Lifestyle', 'Education'];
     try {
       for (let category of categories) {
-        // Real-time listener for posts using onSnapshot
         const postsRef = collection(db, category);
         onSnapshot(postsRef, (snapshot) => {
           snapshot.docChanges().forEach(change => {
@@ -135,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
               `;
 
-              // Append the post to the respective category container
               if (category === 'Technology') {
                 document.getElementById('techPostsContainer').appendChild(postElement);
               } else if (category === 'Lifestyle') {
@@ -152,26 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Listen to real-time updates in posts
-  function listenToPosts() {
-    const categories = ['Technology', 'Lifestyle', 'Education'];
-    categories.forEach(category => {
-      const postsRef = collection(db, category);
-      onSnapshot(postsRef, (snapshot) => {
-        snapshot.docChanges().forEach(change => {
-          if (change.type === "added") {
-            // Handle new post added
-            fetchPosts();  // This would trigger a re-render of posts
-          }
-        });
-      });
-    });
-  }
-
-  // Call listenToPosts to start listening for real-time updates
   listenToPosts();
 });
-
 
 document.getElementById('userMenu').addEventListener('click', function () {
   const user = getAuth().currentUser;

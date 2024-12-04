@@ -102,7 +102,7 @@ document.getElementById("dashboardButton").addEventListener("click", () => {
         cancelButtonText: 'No, stay here',
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "/dashboard.html"; // Replace with your dashboard URL
+            window.location.href = "dashboard.html"; // Replace with your dashboard URL
         }
     });
 });

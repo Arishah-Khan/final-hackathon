@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+
+    <!-- Tailwind CSS CDN -->
+    <link href="dist/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom animation for fade-in */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Input field with icon inside */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon input {
+            padding-right: 3rem; /* Right space for toggle icon */
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            right: 10px;
+            top: 60%;
+            bottom: 50%;
+            transform: translateY(-50%);
+            color: #68614c;
+        }
+
+        .password-toggle-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #68614c;
+        }
+    </style>
+</head>
+
+<body class="bg-[#f0f0f0] min-h-screen flex flex-col items-center justify-center py-10">
+
+    <!-- Main Signup Container -->
+    <div class="w-full max-w-md bg-white p-6 rounded-xl shadow-md animate-fade-in">
+        <h2 class="text-3xl text-center font-bold mb-4 text-[#67604b]">SignUp</h2>
+
+        <!-- Name Input with Icon -->
+        <div class="input-with-icon">
+            <label for="nameInput" class="block text-sm font-medium text-gray-700">Name:</label>
+            <input type="text" id="nameInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                placeholder="Enter your name">
+            <i class="fas fa-user"></i> <!-- User Icon -->
+        </div>
+
+        <!-- Email Input with Icon -->
+        <div class="input-with-icon mt-4">
+            <label for="emailInput" class="block text-sm font-medium text-gray-700">Email:</label>
+            <input type="email" id="emailInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                placeholder="Enter your email">
+            <i class="fas fa-envelope"></i> <!-- Envelope Icon -->
+        </div>
+
+        <!-- Password Input with Icon and Toggle Visibility -->
+        <div class="input-with-icon mt-4 relative">
+            <label for="passwordInput" class="block text-sm font-medium text-gray-700">Password:</label>
+            <input type="password" id="passwordInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                required placeholder="Enter your password">
+            <i class="fas fa-eye password-toggle-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i> <!-- Eye Icon to toggle password visibility -->
+        </div>
+
+        <!-- Phone Number Input with Icon -->
+        <div class="input-with-icon mt-4">
+            <label for="phoneInput" class="block text-sm font-medium text-gray-700">Phone Number:</label>
+            <input type="tel" id="phoneInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                placeholder="Enter your phone number">
+            <i class="fas fa-phone-alt"></i> <!-- Phone Icon -->
+        </div>
+
+        <!-- Address Input with Icon -->
+        <div class="input-with-icon mt-4">
+            <label for="addressInput" class="block text-sm font-medium text-gray-700">Address:</label>
+            <input type="text" id="addressInput" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required
+                placeholder="Enter your address">
+            <i class="fas fa-map-marker-alt"></i> <!-- Map Icon -->
+        </div>
+
+        <!-- Profile Picture Upload -->
+        <label for="profilePicture" class="block text-sm font-medium text-gray-700 mt-4">Profile Picture:</label>
+        <input type="file" id="profilePicture" class="w-full p-2 mt-2 border border-gray-300 rounded-md"
+            accept="image/*">
+
+        <!-- Signup Button -->
+        <button id="signupButton" class="w-full bg-[#68614c] text-white py-2 px-6 rounded-lg hover:text-black font-semibold hover:bg-[#b6af9b] transition duration-300 mt-4">Sign Up</button>
+
+        <!-- Redirect to Login Button (If account already exists) -->
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">Already have an account? 
+                <button id="loginRedirectButton" class="font-bold text-[#68614c] hover:underline">Login</button>
+            </p>
+        </div>
+
+
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+
+    <script>
+        // Function to toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("passwordInput");
+            const toggleIcon = document.getElementById("togglePassword");
+            
+            // Toggle input type between password and text
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text"; // Show password
+                toggleIcon.classList.remove("fa-eye"); // Change icon to eye-off
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password"; // Hide password
+                toggleIcon.classList.remove("fa-eye-slash"); // Change icon to eye
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

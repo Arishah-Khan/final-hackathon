@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="dist/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css">
+</head>
+<body class="bg-[#f0f0f0] min-h-screen flex flex-col items-center justify-center py-10">
+
+    <div class="w-full max-w-sm bg-white p-6 rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-[#67604b] mb-6">Sign In</h2>
+
+        <!-- Email Input -->
+        <label for="emailInput" class="block text-sm font-medium text-gray-700">Email:</label>
+        <input type="email" id="emailInput" class="w-full p-3 mt-2 border border-gray-300 rounded-md" required placeholder="Enter your email">
+
+        <!-- Password Input -->
+        <label for="passwordInput" class="block text-sm font-medium text-gray-700 mt-4">Password:</label>
+        <input type="password" id="passwordInput" class="w-full p-3 mt-2 border border-gray-300 rounded-md" required placeholder="Enter your password">
+
+        <!-- Login Button -->
+        <button id="loginButton" class="w-full bg-[#68614c] text-white py-2 px-4 rounded-lg hover:bg-[#b6af9b] mt-6 font-semibold">Login</button>
+
+        <!-- Redirect to Signup -->
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">Don't have an account? 
+                <button id="signupRedirectButton" class="font-bold text-[#68614c] hover:underline">Sign Up</button>
+            </p>
+        </div>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="signIn.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+
+</body>
+</html>

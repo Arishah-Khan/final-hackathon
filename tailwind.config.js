@@ -5,7 +5,10 @@ module.exports = {
     "./main.js",
     "./dashboard.html",
     "./signIn.html",
-    "./signIn.js"
+    "./signIn.js",
+    "./userDetail.html",
+    "./userDetail.js",
+    "./signup.js"
   ],
   theme: {
     extend: {},

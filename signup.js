@@ -1,125 +1,108 @@
-import { getAuth, createUserWithEmailAndPassword, doc, setDoc, db,serverTimestamp } from "./firebase.js";
+import { getAuth, createUserWithEmailAndPassword, doc, setDoc, db, serverTimestamp } from "./firebase.js";
 
 const cloudName = "dukmizgzg"; // Cloudinary cloud name
 const unSignedUploadPreSet = "esqdfaa1"; // Cloudinary unsigned upload preset
 const auth = getAuth();
 
-
 async function userSignup() {
-    const name = document.getElementById("nameInput").value;
-    const email = document.getElementById("emailInput").value;
+    const name = document.getElementById("nameInput").value.trim();
+    const email = document.getElementById("emailInput").value.trim();
     const password = document.getElementById("passwordInput").value;
-    const phoneNumber = document.getElementById("phoneInput").value;
-    const address = document.getElementById("addressInput").value;
-    const profilePicture = document.getElementById("profilePicture").files[0]; // File input for profile picture
+    const phoneNumber = document.getElementById("phoneInput").value.trim();
+    const address = document.getElementById("addressInput").value.trim();
+    const profilePicture = document.getElementById("profilePicture").files[0];
 
-    // Check if all fields are filled
+    // Validate all fields
     if (!name || !email || !password || !phoneNumber || !address || !profilePicture) {
-        showErrorPopup("All fields are required, including the profile picture.");
+        showErrorPopup("Please fill in all the fields and upload a profile picture.");
         return;
     }
 
-    // Show loader while processing
+    // Show loading spinner
     Swal.fire({
         title: 'Signing up...',
-        text: 'Please wait while we create your account.',
-        didOpen: () => {
-            Swal.showLoading();
-        }
+        text: 'Processing your information.',
+        didOpen: () => Swal.showLoading(),
     });
 
     try {
-        // Step 1: Upload the profile picture to Cloudinary
+        // Upload profile picture to Cloudinary
         const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
         const formData = new FormData();
-        formData.append("file", profilePicture); // Attach the selected file
-        formData.append("upload_preset", unSignedUploadPreSet); // Use the unsigned preset
+        formData.append("file", profilePicture);
+        formData.append("upload_preset", unSignedUploadPreSet);
 
-        const cloudinaryResponse = await fetch(cloudinaryUrl, {
-            method: "POST",
-            body: formData,
-        });
+        const cloudinaryResponse = await fetch(cloudinaryUrl, { method: "POST", body: formData });
+        if (!cloudinaryResponse.ok) throw new Error("Failed to upload the profile picture.");
 
         const cloudinaryData = await cloudinaryResponse.json();
-        if (!cloudinaryResponse.ok) {
-            throw new Error("Failed to upload the profile picture to Cloudinary.");
-        }
+        const profilePictureUrl = cloudinaryData.secure_url;
 
-        const profilePictureUrl = cloudinaryData.secure_url; // Get the uploaded picture URL
-
+        // Create Firebase user
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // Store user data in Firestore
         await setDoc(doc(db, "users", user.uid), {
-            name: name,
-            email: email,
-            phoneNumber: phoneNumber,
-            address: address,
-            role: "user", // Set the role
-            signupDate: serverTimestamp(), 
-            profilePicture: profilePictureUrl, // Store the Cloudinary picture URL
+            name,
+            email,
+            phoneNumber,
+            address,
+            role: "user",
+            signupDate: serverTimestamp(),
+            profilePicture: profilePictureUrl,
         });
 
-        console.log("User signed up and data stored in Firestore successfully!");
-
-        // Close the loader and show success message
-        Swal.close();
+        Swal.close(); // Close loader
         Swal.fire({
-            title: 'Success!',
-            text: 'You have successfully signed up!',
+            title: 'Signup Successful!',
+            text: 'Your account has been created successfully.',
             icon: 'success',
             confirmButtonText: 'Go to Login',
         }).then(() => {
-            // Redirect to the user login page
             window.location.href = "signIn.html";
         });
     } catch (error) {
-        console.error("Error during signup:", error);
-
-        // Close the loader
         Swal.close();
-
-        // Show error message
-        let errorMessage = "An error occurred during signup.";
-        if (error.code === "auth/email-already-in-use") {
-            errorMessage = "The email is already in use.";
-        } else if (error.code === "auth/invalid-email") {
-            errorMessage = "The email format is invalid.";
-        } else if (error.code === "auth/weak-password") {
-            errorMessage = "The password is too weak.";
-        }
-
         Swal.fire({
-            title: 'Error!',
-            text: errorMessage,
+            title: 'Signup Failed',
+            text: error.message || "Something went wrong. Please try again.",
             icon: 'error',
             confirmButtonText: 'Try Again',
         });
     }
 }
 
-// Function to show an error popup
+// Error Popup
 function showErrorPopup(message) {
     Swal.fire({
-        title: 'Error!',
+        title: 'Error',
         text: message,
         icon: 'error',
         confirmButtonText: 'OK',
     });
 }
 
-// Event listener for the signup button
+// Event Listeners
 document.getElementById("signupButton").addEventListener("click", userSignup);
 
-
-document.getElementById("loginRedirectButton").addEventListener("click", function () {
-    window.location.href = "signIn.html"; // Redirect to the login page
+// Redirect to Login
+document.getElementById("loginRedirectButton").addEventListener("click", () => {
+    window.location.href = "signIn.html";
 });
 
-
-
-
-// Dashboard Button Click Action (redirect to the dashboard)
-document.getElementById("dashboardButton").addEventListener("click", function () {
-    window.location.href = "/dashboard.html";  // Replace with your dashboard URL
+// Dashboard Button Confirmation
+document.getElementById("dashboardButton").addEventListener("click", () => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to go to the dashboard?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, go to Dashboard',
+        cancelButtonText: 'No, stay here',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/dashboard.html"; // Replace with your dashboard URL
+        }
+    });
 });

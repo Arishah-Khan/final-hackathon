@@ -3,25 +3,45 @@ import { getAuth, db, collection, addDoc, serverTimestamp, getDocs, query, order
 const auth = getAuth();
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Check if the user is logged in
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // User is logged in
-      const userName = user.displayName || "User";
-      const userImage = user.photoURL || "default_image_url"; // Replace with the user's profile image URL
+     const userName = user.displayName || "User";
+      const userImage = user.photoURL || "default_image_url"; 
 
-      // Show user info and hide register button
       document.getElementById('registerDiv').style.display = 'none';
       document.getElementById('userInfo').style.display = 'flex';
       document.getElementById('userName').innerText = userName;
       document.getElementById('userImage').src = userImage;
 
+      fetchUserInfo(user.uid);
     } else {
-      // User is not logged in
       document.getElementById('registerDiv').style.display = 'flex';
       document.getElementById('userInfo').style.display = 'none';
     }
   });
+
+  // Function to fetch additional user info from Firestore using snapshot
+  function fetchUserInfo(userId) {
+    try {
+      // Reference to the user document in Firestore (assuming you have a 'users' collection)
+      const userDocRef = db.collection('users').doc(userId);
+      
+      // Real-time listener using onSnapshot
+      userDocRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+          
+          // Display user info from Firestore (name and profile picture)
+          document.getElementById('userName').innerText = userData.name || "User";
+          document.getElementById('userImage').src = userData.profilePicture || "default_image_url"; // Default if profile picture doesn't exist
+        } else {
+          console.log("No user data found!");
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  }
 
   // Toggle Add Post Button Visibility
   document.getElementById('addPostButton').addEventListener('click', function () {
@@ -84,8 +104,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Fetch and Display Posts from All Categories
-  async function fetchPosts() {
+  // Fetch and Display Posts from All Categories using snapshot
+  function fetchPosts() {
     // Clear previous posts in all categories
     document.getElementById('techPostsContainer').innerHTML = '';
     document.getElementById('lifestylePostsContainer').innerHTML = '';
@@ -94,39 +114,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const categories = ['Technology', 'Lifestyle', 'Education'];
     try {
       for (let category of categories) {
-        // Create a query to fetch posts ordered by creation date
-        const postsQuery = query(collection(db, category), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(postsQuery);
+        // Real-time listener for posts using onSnapshot
+        const postsRef = collection(db, category);
+        onSnapshot(postsRef, (snapshot) => {
+          snapshot.docChanges().forEach(change => {
+            if (change.type === "added") {
+              const post = change.doc.data();
+              const postElement = document.createElement('div');
+              postElement.classList.add('p-4', 'bg-white', 'shadow-md', 'rounded-md','w-[80%]','mx-auto');
 
-        querySnapshot.forEach(async (doc) => {
-          const post = doc.data();
-          const postElement = document.createElement('div');
-          postElement.classList.add('p-4', 'bg-white', 'shadow-md', 'rounded-md');
+              const createdAt = post.createdAt ? post.createdAt.toDate() : null;
+              const formattedTime = createdAt ? createdAt.toLocaleString() : "Not available";
 
-          // Fetch user profile information (photo and name) from Firebase Authentication
-          const userName = post.userId;  // Adjust this based on your structure if you're storing user info elsewhere
-          const userImage = 'default_image_url';  // Default or fetched user image
+              postElement.innerHTML = `
+                  <div>
+              <h4> ${post.category}</h4>
+                <h3 class="font-bold mt-4">${post.title}</h3>
+                <p>${post.description}</p>
+                <p>${formattedTime}</p>
+                </div>
+              `;
 
-          postElement.innerHTML = `
-            <div class="flex items-center">
-              <img src="${userImage}" alt="${userName}" class="w-10 h-10 rounded-full mr-4">
-              <div>
-                <p class="font-bold">${userName}</p>
-                <p class="text-sm text-gray-500">${post.category} Post</p>
-              </div>
-            </div>
-            <h3 class="font-bold mt-4">${post.title}</h3>
-            <p>${post.description}</p>
-          `;
-
-          // Append the post to the respective category container
-          if (category === 'Technology') {
-            document.getElementById('techPostsContainer').appendChild(postElement);
-          } else if (category === 'Lifestyle') {
-            document.getElementById('lifestylePostsContainer').appendChild(postElement);
-          } else if (category === 'Education') {
-            document.getElementById('eduPostsContainer').appendChild(postElement);
-          }
+              // Append the post to the respective category container
+              if (category === 'Technology') {
+                document.getElementById('techPostsContainer').appendChild(postElement);
+              } else if (category === 'Lifestyle') {
+                document.getElementById('lifestylePostsContainer').appendChild(postElement);
+              } else if (category === 'Education') {
+                document.getElementById('eduPostsContainer').appendChild(postElement);
+              }
+            }
+          });
         });
       }
     } catch (error) {
@@ -156,16 +174,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.getElementById('userMenu').addEventListener('click', function () {
-    const user = getAuth().currentUser;
-    if (user) {
-      const userId = user.uid;
-      console.log("User ID: ", userId);
-  
-      // Redirect to user detail page with userId as URL parameter
-      window.location.href = `userDetail.html?userId=${userId}`;
-    } else {
-      alert("Please log in first!");
-    }
-  });
-  
-  
+  const user = getAuth().currentUser;
+  if (user) {
+    const userId = user.uid;
+    console.log("User ID: ", userId);
+
+    // Redirect to user detail page with userId as URL parameter
+    window.location.href = `userDetail.html?userId=${userId}`;
+  } else {
+    alert("Please log in first!");
+  }
+});

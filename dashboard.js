@@ -1,4 +1,4 @@
-import { getAuth, db, collection, addDoc, serverTimestamp, getDocs, query, orderBy, onAuthStateChanged, onSnapshot } from './firebase.js';
+import { getAuth, db, collection, addDoc, serverTimestamp, onAuthStateChanged, onSnapshot } from './firebase.js';
 
 const auth = getAuth();
 
@@ -178,15 +178,3 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-document.getElementById('userMenu').addEventListener('click', function () {
-  const user = getAuth().currentUser;
-  if (user) {
-    const userId = user.uid;
-    console.log("User ID: ", userId);
-
-    // Redirect to user detail page with userId as URL parameter
-    window.location.href = `userDetail.html?userId=${userId}`;
-  } else {
-    alert("Please log in first!");
-  }
-});
